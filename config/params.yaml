@@ -4,19 +4,20 @@ train:
     path:
       load: data
       write: data
-  model_lr: LinearRegression
-  name_experiment: experiment_rpp_2
+      URL: 'https://www.cbr.ru/hd_base/keyrate/?UniDbQuery.Posted=True&UniDbQuery.From=17.09.2013&UniDbQuery.To=21.12.2023'
+  model_lr: NeuralProphet
+  name_experiment: experiment_np_1
   path_model: model/model.pkl
   random_state: 10
-  test_size: 0.25
+  test_size: 0.1
 predict:
   dir_folder: /Users/maksimfomin/IT/DS_practice/1.Регрессия/2.Key_rate_predict_Time_series
   load:
     path:
       load: data
       write: data
-  model_lr: LinearRegression
+  model_lr: NeuralProphet
   path_model: model/model.pkl
   random_state: 10
-  version_lr: 4
+  version_lr: 1
 

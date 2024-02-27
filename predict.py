@@ -8,14 +8,15 @@ import pandas as pd
 
 
 CONFIG = yaml.safe_load(open('config/params.yaml'))['predict']
+PATH_DATA = "data/key_rate.csv"
 
 
 logging.basicConfig(filename='log/app.log', filemode='w+', format='%(asctime)s : %(levelname)s : %(message)s',
                     level=logging.DEBUG)
 
 
-def predict_price(model: pickle, dict_data: dict):
-    logging.info('Predict house price')
+def predict_rate(df, periods=365, n_predict=180):
+    logging.info('Predict key rate')
     logging.info('Loading model last version')
 
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
@@ -24,39 +25,23 @@ def predict_price(model: pickle, dict_data: dict):
 
     logging.info(f"Loaded {CONFIG['model_lr']}{CONFIG['version_lr']}")
 
-    data_predict = pd.DataFrame([dict_data])
-    predict = model.predict(data_predict)
+    future = model.make_future_dataframe(df, periods=periods, n_historic_predictions=n_predict)
+    forecast = model.predict(future)
 
-    return predict
+    return forecast, model.plot(forecast), model.plot_components(forecast)
 
 
 def main():
     # Download last saved models from MLFlow
     logging.info('Loading model last version')
-
-    mlflow.set_tracking_uri("http://127.0.0.1:5000")
-    model_uri_lr = f"models:/{CONFIG['model_lr']}/{CONFIG['version_lr']}"
-    model = mlflow.sklearn.load_model(model_uri_lr)
-
     logging.info(f"Loaded {CONFIG['model_lr']}{CONFIG['version_lr']}")
 
-    dict_data = {
-        "building_type": 2,
-        "object_type": 11,
-        "level": 10,
-        "levels": 23,
-        "rooms": 5,
-        "area": 100,
-        "kitchen_area": 30,
-    }
+    df = pd.read_csv(PATH_DATA)
+    forecast, plot, components = predict_rate(df)
 
-    data_predict = pd.DataFrame([dict_data])
-    predict = model.predict(data_predict)
-
-    print(predict)
-    print(type(predict))
-    # print(type(float(predict)))
+    print(forecast)
     print('Hello!')
+
 
 if __name__ == "__main__":
     main()
