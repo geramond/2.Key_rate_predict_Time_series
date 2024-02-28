@@ -11,11 +11,18 @@ PATH_DATA = "data/key_rate.csv"
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
+
+def check(data):
+    if '202' in str(data).split('.'):
+        return str(data) + '0'
+    return str(data)
+
+
 def load_data(path):
     """Load data from path"""
-    data = pd.read_csv(path)
+    data = pd.read_csv(path, sep='\t')
     # for demonstration
-    data = data.sample(5000)
+    # data = data.sample(5000)
     return data
 
 

@@ -5,8 +5,8 @@ import pickle
 import yaml
 import json
 
-from mlflow.tracking import MlflowClient
 import mlflow
+from mlflow.tracking import MlflowClient
 
 import pandas as pd
 from pandas.api.types import CategoricalDtype
@@ -14,9 +14,9 @@ import numpy as np
 
 # from prophet import Prophet
 from neuralprophet import NeuralProphet
-
-
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
+
+from src import load_data
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -33,8 +33,8 @@ PATH_MODEL = CONFIG['path_model']
 
 
 
-logging.basicConfig(filename='log/app.log', filemode='w+', format='%(asctime)s : %(levelname)s : %(message)s',
-                    level=logging.DEBUG)
+# logging.basicConfig(filename='log/app.log', filemode='w+', format='%(asctime)s : %(levelname)s : %(message)s',
+#                     level=logging.DEBUG)
 
 
 def get_version_model(config_name, client):
@@ -47,11 +47,6 @@ def get_version_model(config_name, client):
         dict_push[count] = value
     return dict(list(dict_push.items())[0][1])['version']
 
-
-def check(data):
-    if '202' in str(data).split('.'):
-        return str(data) + '0'
-    return str(data)
 
 def create_features(data_full, col_datetime, cat_type):
     """Creates time series features"""
@@ -70,9 +65,10 @@ def create_features(data_full, col_datetime, cat_type):
 
 
 def load_and_train_data(path_data):
-    df = pd.read_csv(path_data)
+    # df = pd.read_csv(path_data, sep='\t')
+    df = load_data.load_data(PATH_DATA)
 
-    df['Дата'] = df['Дата'].apply(lambda x: check(x))
+    df['Дата'] = df['Дата'].apply(lambda x: load_data.check(x))
     df['Дата'] = pd.to_datetime(df['Дата'].astype(str), format='%d.%m.%Y')
     df = df.sort_values(by='Дата').reset_index(drop=True)
     df.columns = ['datetime', 'key_rate']
@@ -165,3 +161,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# load_and_train_data(PATH_DATA)

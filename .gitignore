@@ -10,3 +10,6 @@ mlruns/**
 venv/**
 log/**
 **/__pycache__/**
+/notebooks/lightning_logs/
+/lightning_logs/
+/model/

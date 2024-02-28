@@ -10,15 +10,17 @@ import predict
 
 
 CONFIG = yaml.safe_load(open('config/params.yaml'))['predict']
+URL = CONFIG['load']['URL']
 PATH_DATA = "data/key_rate.csv"
+
 
 app = FastAPI()
 
 
 @st.cache_data
 @app.post('/load_data')
-def download_data():
-    result = load_data.download_data()
+def download_data(URL, path_data):
+    result = load_data.download_data(URL, path_data)
 
     return result
 
@@ -39,16 +41,17 @@ def get_train():
 @app.post('/get_predict')
 def get_predict(df):
 
-    forecast, plot, components = predict.predict_rate(df)
+    # forecast, plot, components = predict.predict_rate(df)
+    result = predict.predict_rate(df)
 
-    return forecast
+    return result
 
 
 def main():
     st.set_page_config(layout="wide")
     st.header('Key rate predict')
 
-    df = download_data.load_data(PATH_DATA)
+    df = load_data.load_data(PATH_DATA)
     st.write(df[:4])
 
     st.markdown(
@@ -79,14 +82,13 @@ def main():
 
     button_download_data = st.button("Download data")
     if button_download_data:
-        result_load_data = download_data()
+        result_load_data = download_data(URL, PATH_DATA)
         st.success(f"{result_load_data}")
 
 
     button_train = st.button("Train")
     if button_train:
         result_train = get_train()
-        # result_train = result_train['mae']
         st.success(f"MAE score: {round(float(result_train['mae']), 2)}")
         st.success(f"MAPE score: {round(float(result_train['mape']), 2)}")
 
@@ -95,7 +97,19 @@ def main():
 
     if button_predict:
         result_predict = get_predict(df)
-        st.success(f"{result_predict}")
+
+        model = result_predict[0]
+        forecast = result_predict[1]
+
+        st.success(f"Success!")
+        st.table(forecast[-5:])
+
+        # st.line_chart(forecast['ds'])
+        # st.plotly_chart(forecast['ds'])
+
+        # st.plotly_chart(model.plot(forecast))
+        st.plotly_chart(model.plot_components(forecast))
+
 
     button_mlflow = st.button("MLFlow")
     if button_mlflow:
@@ -107,7 +121,6 @@ if __name__ == '__main__':
     main()
 
 # TODO:
-#   - CREATE modules: train, test, main
 #   - Docker
 #   - MLFlow, Airflow
 #   - FastAPI
