@@ -1,8 +1,10 @@
 pandas==2.2.0
 numpy==1.26.4
-prophet==1.1.5
-bs4==0.0.2
+
 seaborn==0.13.2
+
+neuralprophet==0.8.0
+bs4==0.0.2
 scikit-learn==1.4.1
 
 mlflow==2.10.0
@@ -13,9 +15,10 @@ pydantic==2.6.0
 uvicorn==0.27.0
 streamlit==1.30.0
 
-
-
 PyYAML==6.0
 tqdm==4.62.3
 Pillow==9.0.0
 pysqlite3==0.5.2
+
+lxml==5.1.0
+IPython==8.22.1
