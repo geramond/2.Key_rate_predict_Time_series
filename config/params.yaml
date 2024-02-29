@@ -9,7 +9,7 @@ predict:
   path_model: model/model.pkl
   random_state: 10
   test_size: 0.1
-  version_lr: 9
+  version_lr: 10
 train:
   dir_folder: /Users/maksimfomin/IT/DS_practice/1.Регрессия/2.Key_rate_predict_Time_series
   load:

@@ -121,10 +121,6 @@ if __name__ == '__main__':
     main()
 
 # TODO:
-#   - Docker
-#   - MLFlow, Airflow
-#   - FastAPI
-#   - Streamlit
 #   - Graphics: key_rate(time), boxplots, plot_components
-#   - Predicts: next_year key_rate(time), forecast, plot_components
+#   - Predicts: next_year key_rate(time), forecast
 #   - SCALE: choose rates (key_rate, currencies,...), choose periods to train
